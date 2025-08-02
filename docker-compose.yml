@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: lumen-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: lumen_dev
+      POSTGRES_USER: lumen_user
+      POSTGRES_PASSWORD: lumen_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./data/init:/docker-entrypoint-initdb.d
+    networks:
+      - lumen-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: lumen-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - lumen-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  lumen-network:
+    driver: bridge 
